@@ -1,7 +1,9 @@
 import './App.css';
-import { useState} from 'react';
+
+import { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
+import Timer from './Timer';
 function App() {
   const questions = [
     {
@@ -81,6 +83,8 @@ function App() {
       answer: "Javascript"
     }
   ];
+  const [showDisplay, setShowDisplay] = useState(false)
+  const [userName, setUserName] = useState("")
   const [currentQues, setCurrentQues] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [showScore, setShowScore] = useState(false)
@@ -89,7 +93,16 @@ function App() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  
+ const startQuiz = () => {
+   if(userName.length >= 3){
+   setShowDisplay(true)
+   }
+   else{
+     alert("Please write correct name")
+   }
+ }
+  
   function checkAns(answerOption) {
 
     if (answerOption === questions[currentQues].answer) {
@@ -104,10 +117,16 @@ function App() {
     }
   }
   
-  
-
-  return <div>
-    {showScore ? (
+  return <div>{!showDisplay ? <form>
+      <h1>Fill the Form</h1>
+      <input placeholder='Enter your name' value={userName}  onChange={(e) => setUserName(e.target.value)} className="userinp"/>
+      <select>
+        <option>Web and Mobile Dev.</option>
+        
+      </select>
+      <button onClick={ () => startQuiz()}>Start Quiz</button>
+  </form> :
+      showScore ? (
       <>
         <div className="resultdiv">
           <Button variant="primary mybtn" onClick={handleShow}>
@@ -116,11 +135,11 @@ function App() {
         </div>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Congratulations!</Modal.Title>
+            <Modal.Title className='modaltitle'>Congratulations!</Modal.Title>
           </Modal.Header>
-          <Modal.Body>You have scored <span className='totalscore'>{totalScore}</span > out of <span className='totalques'>{questions.length}</span></Modal.Body>
+          <Modal.Body className='modalbody'>You have scored <span className='totalscore'>{totalScore}</span > out of <span className='totalques'>{questions.length}</span></Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary closebtn" onClick={handleClose}>
               Close
             </Button>
 
@@ -131,10 +150,14 @@ function App() {
       <div className='maindivparent' >
         <div className='maindiv'>
           <div className='quesdiv'>
-          
-
-            <p>Question {currentQues + 1}   out of {questions.length} </p>
-            <p>{questions[currentQues].question} ? </p>
+            <div className='quesdivp1'>
+            <p>{userName}</p>
+            <p >Question {currentQues + 1}   out of {questions.length} </p>
+           <Timer />
+              
+            </div>
+            
+            <p className='quespara'>{questions[currentQues].question} ? </p>
           </div>
           <div className='options'>
             <div className='optdiv1'>
